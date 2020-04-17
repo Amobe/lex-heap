@@ -33,7 +33,7 @@ func (h *binaryHeap) Poll() int {
 
 	v := h.tree[0]
 	for i := 1; i < h.len; i++ {
-		h.swap(&h.tree[i-1], &h.tree[i])
+		h.swapIdx(i, i-1)
 	}
 	h.len--
 	return v
@@ -48,8 +48,8 @@ func (h *binaryHeap) String() string {
 	return s
 }
 
-func (h *binaryHeap) swap(x *int, y *int) {
-	tmp := *x
-	*x = *y
-	*y = tmp
+func (h *binaryHeap) swapIdx(idxA int, idxB int) {
+	tmp := h.tree[idxA]
+	h.tree[idxA] = h.tree[idxB]
+	h.tree[idxB] = tmp
 }

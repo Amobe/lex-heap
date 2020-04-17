@@ -15,7 +15,7 @@ func TestBHeapSuite(t *testing.T) {
 }
 
 func (s *BHeapSuite) TestNewBHeap() {
-	givin := []int{5, 4, 1, 7, 3}
+	givin := []int{1, 2, 3, 4, 5}
 	h := NewBinaryHeap(givin)
 
 	for _, v := range givin {
