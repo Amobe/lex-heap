@@ -25,9 +25,9 @@ func (s *BHeapSuite) TestNewBHeap() {
 	s.Equal(0, h.Poll())
 }
 
-func (s *BHeapSuite) TestBuildMinHeap() {
+func (s *BHeapSuite) TestBuildMinBHeap() {
 	givin := []int{3, 5, 1, 4, 2}
-	h := NewBinaryHeap(givin)
+	h := NewMinBinaryHeap(givin)
 
 	expect := []int{1, 2, 3, 5, 4}
 	for _, v := range expect {

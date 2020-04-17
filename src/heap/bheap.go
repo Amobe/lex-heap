@@ -15,13 +15,24 @@ type binaryHeap struct {
 	len  int
 }
 
-func NewBinaryHeap(in []int) Heap {
+func newBinaryHeap(in []int) *binaryHeap {
 	h := &binaryHeap{
 		tree: make([]int, _HeapSize),
 	}
 	for _, v := range in {
 		h.Insert(v)
 	}
+	return h
+}
+
+func NewBinaryHeap(in []int) Heap {
+	h := newBinaryHeap(in)
+	fmt.Printf("%s\n", h)
+	return h
+}
+
+func NewMinBinaryHeap(in []int) Heap {
+	h := newBinaryHeap(in)
 	h.MinHeapify()
 	fmt.Printf("%s\n", h)
 	return h
@@ -30,7 +41,6 @@ func NewBinaryHeap(in []int) Heap {
 func (h *binaryHeap) Insert(v int) {
 	h.tree[h.len+1] = v
 	h.len++
-	fmt.Printf("%s\n", h)
 }
 
 func (h *binaryHeap) Poll() int {
