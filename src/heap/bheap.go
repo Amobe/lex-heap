@@ -21,7 +21,7 @@ func NewBinaryHeap(in []int) Heap {
 }
 
 func (h *binaryHeap) Insert(v int) {
-	h.tree[h.len] = v
+	h.tree[h.len+1] = v
 	h.len++
 	fmt.Printf("%s\n", h)
 }
@@ -31,9 +31,9 @@ func (h *binaryHeap) Poll() int {
 		return 0
 	}
 
-	v := h.tree[0]
+	v := h.tree[1]
 	for i := 1; i < h.len; i++ {
-		h.swapIdx(i, i-1)
+		h.swapIdx(i, i+1)
 	}
 	h.len--
 	return v
@@ -48,7 +48,7 @@ func (h *binaryHeap) String() string {
 	return s
 }
 
-func (h *binaryHeap) swapIdx(idxA int, idxB int) {
+func (h *binaryHeap) swapIdx(idxA, idxB int) {
 	tmp := h.tree[idxA]
 	h.tree[idxA] = h.tree[idxB]
 	h.tree[idxB] = tmp
