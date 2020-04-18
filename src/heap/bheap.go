@@ -27,14 +27,14 @@ func newBinaryHeap(in []int) *binaryHeap {
 
 func NewBinaryHeap(in []int) Heap {
 	h := newBinaryHeap(in)
-	fmt.Printf("%s\n", h)
+	h.Print()
 	return h
 }
 
 func NewMinBinaryHeap(in []int) Heap {
 	h := newBinaryHeap(in)
 	h.MinHeapify()
-	fmt.Printf("%s\n", h)
+	h.Print()
 	return h
 }
 
@@ -49,15 +49,38 @@ func (h *binaryHeap) Poll() int {
 	}
 
 	v := h.tree[_RootIdx]
-	for i := _RootIdx; i < h.len; i++ {
-		h.swapIdx(i, i+1)
-	}
-	h.len--
+	h.removeIdx(_RootIdx)
 	return v
 }
 
+// Remove removes the element which is same as givin val.
 func (h *binaryHeap) Remove(v int) {
 	// TODO: imp
+}
+
+// RemoveIdx removes the element at the place of givin idx.
+func (h *binaryHeap) removeIdx(idx int) {
+	if h.idxOutOfRange(idx) || h.emptyNode(idx) {
+		return
+	}
+	h.swapIdx(idx, h.len)
+	h.len--
+	h.bubbleDown(idx)
+}
+
+func (h *binaryHeap) bubbleDown(idx int) {
+	if h.idxOutOfRange(idx) || h.emptyNode(idx) {
+		return
+	}
+	smallest := h.smallValueIdx(h.leftChildIdx(idx), h.rightChildIdx(idx))
+	if idx != h.smallValueIdx(idx, smallest) {
+		h.swapIdx(smallest, idx)
+		h.bubbleDown(smallest)
+	}
+}
+
+func (h *binaryHeap) Print() {
+	fmt.Printf("%s\n", h)
 }
 
 func (h *binaryHeap) String() string {
@@ -103,6 +126,7 @@ func (h *binaryHeap) minHeapify(root int) {
 	h.minHeapify(right)
 }
 
+// MinHeapify makes entire tree became a valid min heap.
 func (h *binaryHeap) MinHeapify() {
 	rootIdx := 1
 	h.minHeapify(rootIdx)
