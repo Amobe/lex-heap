@@ -25,24 +25,37 @@ func newBinaryHeap(in []int) *binaryHeap {
 	return h
 }
 
-func NewBinaryHeap(in []int) Heap {
-	h := newBinaryHeap(in)
-	h.Print()
-	return h
-}
-
-func NewMinBinaryHeap(in []int) Heap {
-	h := newBinaryHeap(in)
+func newBinaryHeapWithTree(tree []int) *binaryHeap {
+	h := &binaryHeap{
+		tree: make([]int, _HeapSize),
+	}
+	for _, v := range tree {
+		h.len++
+		h.tree[h.len] = v
+	}
 	h.MinHeapify()
+	return h
+}
+
+// NewBinaryMinHeap creates a min heap with giving in values.
+func NewBinaryMinHeap(in []int) Heap {
+	h := newBinaryHeap(in)
 	h.Print()
 	return h
 }
 
-func (h *binaryHeap) Insert(v int) {
-	h.tree[h.len+1] = v
+// Insert inserts a val into the heap.
+func (h *binaryHeap) Insert(val int) {
 	h.len++
+	idx := h.len
+	if h.idxOutOfRange(idx) {
+		return
+	}
+	h.tree[idx] = val
+	h.bubbleUp(idx)
 }
 
+// Poll polls the smallest value from the heap.
 func (h *binaryHeap) Poll() int {
 	if h.len == 0 {
 		return 0
@@ -67,6 +80,17 @@ func (h *binaryHeap) removeIdx(idx int) {
 	h.swapIdx(idx, h.len)
 	h.len--
 	h.bubbleDown(idx)
+}
+
+func (h *binaryHeap) bubbleUp(idx int) {
+	if h.idxOutOfRange(idx) || h.emptyNode(idx) {
+		return
+	}
+	largest := h.largeValueIdx(idx, h.parentIdx(idx))
+	if idx != largest {
+		h.swapIdx(largest, idx)
+		h.bubbleUp(largest)
+	}
 }
 
 func (h *binaryHeap) bubbleDown(idx int) {
@@ -106,6 +130,19 @@ func (h *binaryHeap) smallValueIdx(idxA, idxB int) int {
 		return idxA
 	}
 	if h.tree[idxA] < h.tree[idxB] {
+		return idxA
+	}
+	return idxB
+}
+
+func (h *binaryHeap) largeValueIdx(idxA, idxB int) int {
+	if h.idxOutOfRange(idxA) || h.emptyNode(idxA) {
+		return idxB
+	}
+	if h.idxOutOfRange(idxB) || h.emptyNode(idxB) {
+		return idxA
+	}
+	if h.tree[idxA] > h.tree[idxB] {
 		return idxA
 	}
 	return idxB

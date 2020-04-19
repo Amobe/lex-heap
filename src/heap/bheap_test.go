@@ -16,7 +16,7 @@ func TestBHeapSuite(t *testing.T) {
 
 func (s *BHeapSuite) TestNewBHeap() {
 	giving := []int{1, 2, 3, 4, 5}
-	h := NewBinaryHeap(giving)
+	h := NewBinaryMinHeap(giving)
 
 	for _, v := range giving {
 		s.Equal(v, h.Poll())
@@ -27,7 +27,19 @@ func (s *BHeapSuite) TestNewBHeap() {
 
 func (s *BHeapSuite) TestBuildMinBHeap() {
 	giving := []int{3, 5, 1, 4, 2}
-	h := NewMinBinaryHeap(giving)
+	h := NewBinaryMinHeap(giving)
+
+	expect := []int{1, 2, 3, 4, 5}
+	for _, v := range expect {
+		s.Equal(v, h.Poll())
+	}
+
+	s.Equal(0, h.Poll())
+}
+
+func (s *BHeapSuite) TestMinHeapify() {
+	giving := []int{3, 5, 1, 4, 2}
+	h := newBinaryHeapWithTree(giving)
 
 	expect := []int{1, 2, 3, 4, 5}
 	for _, v := range expect {
@@ -72,7 +84,7 @@ func (s *BHeapSuite) TestRightChildIdx() {
 
 func (s *BHeapSuite) TestMinHeapSearch() {
 	giving := []int{3, 5, 1, 4, 2}
-	h := NewMinBinaryHeap(giving)
+	h := NewBinaryMinHeap(giving)
 
 	s.Equal(1, h.Search(1))
 	s.Equal(2, h.Search(2))
@@ -84,7 +96,7 @@ func (s *BHeapSuite) TestMinHeapSearch() {
 
 func (s *BHeapSuite) TestRemove() {
 	giving := []int{3, 5, 1, 4, 2}
-	h := NewMinBinaryHeap(giving)
+	h := NewBinaryMinHeap(giving)
 
 	h.Remove(3)
 	h.Remove(4)
