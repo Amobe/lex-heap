@@ -15,28 +15,6 @@ type binaryHeap struct {
 	len  int
 }
 
-func newBinaryHeap(in []int) *binaryHeap {
-	h := &binaryHeap{
-		tree: make([]int, _HeapSize),
-	}
-	for _, v := range in {
-		h.Insert(v)
-	}
-	return h
-}
-
-func newBinaryHeapWithTree(tree []int) *binaryHeap {
-	h := &binaryHeap{
-		tree: make([]int, _HeapSize),
-	}
-	for _, v := range tree {
-		h.len++
-		h.tree[h.len] = v
-	}
-	h.MinHeapify()
-	return h
-}
-
 // NewBinaryMinHeap creates a min heap with giving in values.
 func NewBinaryMinHeap(in []int) Heap {
 	h := newBinaryHeap(in)
@@ -72,36 +50,14 @@ func (h *binaryHeap) Remove(val int) {
 	h.removeIdx(idx)
 }
 
-// RemoveIdx removes the element at the place of giving idx.
-func (h *binaryHeap) removeIdx(idx int) {
-	if h.idxOutOfRange(idx) || h.emptyNode(idx) {
-		return
+// Search searches the index of giving value, return 0 if val not found.
+func (h *binaryHeap) Search(val int) int {
+	for idx := _RootIdx; idx <= h.len; idx++ {
+		if h.tree[idx] == val {
+			return idx
+		}
 	}
-	h.swapIdx(idx, h.len)
-	h.len--
-	h.bubbleDown(idx)
-}
-
-func (h *binaryHeap) bubbleUp(idx int) {
-	if h.idxOutOfRange(idx) || h.emptyNode(idx) {
-		return
-	}
-	largest := h.largeValueIdx(idx, h.parentIdx(idx))
-	if idx != largest {
-		h.swapIdx(largest, idx)
-		h.bubbleUp(largest)
-	}
-}
-
-func (h *binaryHeap) bubbleDown(idx int) {
-	if h.idxOutOfRange(idx) || h.emptyNode(idx) {
-		return
-	}
-	smallest := h.smallValueIdx(h.leftChildIdx(idx), h.rightChildIdx(idx))
-	if idx != h.smallValueIdx(idx, smallest) {
-		h.swapIdx(smallest, idx)
-		h.bubbleDown(smallest)
-	}
+	return 0
 }
 
 func (h *binaryHeap) Print() {
@@ -113,6 +69,60 @@ func (h *binaryHeap) String() string {
 	return s
 }
 
+func newBinaryHeap(in []int) *binaryHeap {
+	h := &binaryHeap{
+		tree: make([]int, _HeapSize),
+	}
+	for _, v := range in {
+		h.Insert(v)
+	}
+	return h
+}
+
+func newBinaryHeapWithTree(tree []int) *binaryHeap {
+	h := &binaryHeap{
+		tree: make([]int, _HeapSize),
+	}
+	for _, v := range tree {
+		h.len++
+		h.tree[h.len] = v
+	}
+	h.MinHeapify()
+	return h
+}
+
+// RemoveIdx removes the element at the place of giving idx.
+func (h *binaryHeap) removeIdx(idx int) {
+	if h.invalidNode(idx) {
+		return
+	}
+	h.swapIdx(idx, h.len)
+	h.len--
+	h.bubbleDown(idx)
+}
+
+func (h *binaryHeap) bubbleUp(idx int) {
+	if h.invalidNode(idx) {
+		return
+	}
+	largest := h.largeValueIdx(idx, h.parentIdx(idx))
+	if idx != largest {
+		h.swapIdx(largest, idx)
+		h.bubbleUp(largest)
+	}
+}
+
+func (h *binaryHeap) bubbleDown(idx int) {
+	if h.invalidNode(idx) {
+		return
+	}
+	smallest := h.smallValueIdx(h.leftChildIdx(idx), h.rightChildIdx(idx))
+	if idx != h.smallValueIdx(idx, smallest) {
+		h.swapIdx(smallest, idx)
+		h.bubbleDown(smallest)
+	}
+}
+
 func (h *binaryHeap) swapIdx(idxA, idxB int) {
 	if h.idxOutOfRange(idxA) || h.idxOutOfRange(idxB) {
 		return
@@ -122,34 +132,32 @@ func (h *binaryHeap) swapIdx(idxA, idxB int) {
 	h.tree[idxB] = tmp
 }
 
-func (h *binaryHeap) smallValueIdx(idxA, idxB int) int {
-	if h.idxOutOfRange(idxA) || h.emptyNode(idxA) {
-		return idxB
+func (h *binaryHeap) compareValueIdex(idxA, idxB int, cmpFunc func(idxA, idxB int) bool) int {
+	if cmpFunc == nil {
+		return 0
 	}
-	if h.idxOutOfRange(idxB) || h.emptyNode(idxB) {
-		return idxA
-	}
-	if h.tree[idxA] < h.tree[idxB] {
+	if h.invalidNode(idxB) || cmpFunc(idxA, idxB) {
 		return idxA
 	}
 	return idxB
+}
+
+func (h *binaryHeap) smallValueIdx(idxA, idxB int) int {
+	cmp := func(idxA, idxB int) bool {
+		return h.tree[idxA] < h.tree[idxB]
+	}
+	return h.compareValueIdex(idxA, idxB, cmp)
 }
 
 func (h *binaryHeap) largeValueIdx(idxA, idxB int) int {
-	if h.idxOutOfRange(idxA) || h.emptyNode(idxA) {
-		return idxB
+	cmp := func(idxA, idxB int) bool {
+		return h.tree[idxA] > h.tree[idxB]
 	}
-	if h.idxOutOfRange(idxB) || h.emptyNode(idxB) {
-		return idxA
-	}
-	if h.tree[idxA] > h.tree[idxB] {
-		return idxA
-	}
-	return idxB
+	return h.compareValueIdex(idxA, idxB, cmp)
 }
 
 func (h *binaryHeap) minHeapify(root int) {
-	if h.idxOutOfRange(root) || h.emptyNode(root) {
+	if h.invalidNode(root) {
 		return
 	}
 	left := h.leftChildIdx(root)
@@ -198,16 +206,10 @@ func (h *binaryHeap) emptyNode(i int) bool {
 	return i > h.len
 }
 
-func (h *binaryHeap) idxOutOfRange(i int) bool {
-	return i >= _HeapSize || i <= 0
+func (h *binaryHeap) invalidNode(i int) bool {
+	return h.idxOutOfRange(i) || h.emptyNode(i)
 }
 
-// Search searches the index of giving value, return 0 if val not found.
-func (h *binaryHeap) Search(val int) int {
-	for idx := _RootIdx; idx <= h.len; idx++ {
-		if h.tree[idx] == val {
-			return idx
-		}
-	}
-	return 0
+func (h *binaryHeap) idxOutOfRange(i int) bool {
+	return i >= _HeapSize || i <= 0
 }
