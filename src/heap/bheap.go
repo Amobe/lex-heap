@@ -53,12 +53,13 @@ func (h *binaryHeap) Poll() int {
 	return v
 }
 
-// Remove removes the element which is same as givin val.
-func (h *binaryHeap) Remove(v int) {
-	// TODO: imp
+// Remove removes the element which is same as giving val.
+func (h *binaryHeap) Remove(val int) {
+	idx := h.Search(val)
+	h.removeIdx(idx)
 }
 
-// RemoveIdx removes the element at the place of givin idx.
+// RemoveIdx removes the element at the place of giving idx.
 func (h *binaryHeap) removeIdx(idx int) {
 	if h.idxOutOfRange(idx) || h.emptyNode(idx) {
 		return
@@ -162,4 +163,26 @@ func (h *binaryHeap) emptyNode(i int) bool {
 
 func (h *binaryHeap) idxOutOfRange(i int) bool {
 	return i >= _HeapSize || i <= 0
+}
+
+// bSearch searches the index of giving val in a binary tree start at giving idx.
+func (h *binaryHeap) bSearch(idx, val int) int {
+	if h.idxOutOfRange(idx) || h.emptyNode(idx) {
+		return 0
+	}
+	if h.tree[idx] == val {
+		return idx
+	}
+	if find := h.bSearch(h.leftChildIdx(idx), val); !h.idxOutOfRange(find) {
+		return find
+	}
+	if find := h.bSearch(h.rightChildIdx(idx), val); !h.idxOutOfRange(find) {
+		return find
+	}
+	return 0
+}
+
+// Search searches the index of giving value, return 0 if not found.
+func (h *binaryHeap) Search(val int) int {
+	return h.bSearch(_RootIdx, val)
 }

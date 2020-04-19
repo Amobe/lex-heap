@@ -15,10 +15,10 @@ func TestBHeapSuite(t *testing.T) {
 }
 
 func (s *BHeapSuite) TestNewBHeap() {
-	givin := []int{1, 2, 3, 4, 5}
-	h := NewBinaryHeap(givin)
+	giving := []int{1, 2, 3, 4, 5}
+	h := NewBinaryHeap(giving)
 
-	for _, v := range givin {
+	for _, v := range giving {
 		s.Equal(v, h.Poll())
 	}
 
@@ -26,8 +26,8 @@ func (s *BHeapSuite) TestNewBHeap() {
 }
 
 func (s *BHeapSuite) TestBuildMinBHeap() {
-	givin := []int{3, 5, 1, 4, 2}
-	h := NewMinBinaryHeap(givin)
+	giving := []int{3, 5, 1, 4, 2}
+	h := NewMinBinaryHeap(giving)
 
 	expect := []int{1, 2, 3, 4, 5}
 	for _, v := range expect {
@@ -68,4 +68,49 @@ func (s *BHeapSuite) TestRightChildIdx() {
 	s.Equal(253, h.rightChildIdx(126))
 	s.Equal(255, h.rightChildIdx(127))
 	s.Equal(0, h.rightChildIdx(128)) // out of range
+}
+
+func (s *BHeapSuite) TestBinarySearch() {
+	giving := []int{3, 5, 1, 4, 2}
+	h := newBinaryHeap(giving)
+	rootIdx := 1
+
+	s.Equal(1, h.bSearch(rootIdx, 3))
+	s.Equal(2, h.bSearch(rootIdx, 5))
+	s.Equal(3, h.bSearch(rootIdx, 1))
+	s.Equal(4, h.bSearch(rootIdx, 4))
+	s.Equal(5, h.bSearch(rootIdx, 2))
+	s.Equal(0, h.bSearch(rootIdx, 6))
+
+	h.MinHeapify()
+	s.Equal(1, h.bSearch(rootIdx, 1))
+	s.Equal(2, h.bSearch(rootIdx, 2))
+	s.Equal(3, h.bSearch(rootIdx, 3))
+	s.Equal(4, h.bSearch(rootIdx, 5))
+	s.Equal(5, h.bSearch(rootIdx, 4))
+	s.Equal(0, h.bSearch(rootIdx, 6))
+}
+
+func (s *BHeapSuite) TestMinHeapSearch() {
+	giving := []int{3, 5, 1, 4, 2}
+	h := NewMinBinaryHeap(giving)
+
+	s.Equal(1, h.Search(1))
+	s.Equal(2, h.Search(2))
+	s.Equal(3, h.Search(3))
+	s.Equal(4, h.Search(5))
+	s.Equal(5, h.Search(4))
+	s.Equal(0, h.Search(6))
+}
+
+func (s *BHeapSuite) TestRemove() {
+	giving := []int{3, 5, 1, 4, 2}
+	h := NewMinBinaryHeap(giving)
+
+	h.Remove(3)
+	h.Remove(4)
+	s.Equal(1, h.Poll())
+	s.Equal(2, h.Poll())
+	s.Equal(5, h.Poll())
+	s.Equal(0, h.Poll())
 }
