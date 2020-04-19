@@ -136,7 +136,13 @@ func (h *binaryHeap) compareValueIdex(idxA, idxB int, cmpFunc func(idxA, idxB in
 	if cmpFunc == nil {
 		return 0
 	}
-	if h.invalidNode(idxB) || cmpFunc(idxA, idxB) {
+	if h.invalidNode(idxB) {
+		return idxA
+	}
+	if h.invalidNode(idxA) {
+		return idxB
+	}
+	if cmpFunc(idxA, idxB) {
 		return idxA
 	}
 	return idxB
