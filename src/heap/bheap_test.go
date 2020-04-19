@@ -70,27 +70,6 @@ func (s *BHeapSuite) TestRightChildIdx() {
 	s.Equal(0, h.rightChildIdx(128)) // out of range
 }
 
-func (s *BHeapSuite) TestBinarySearch() {
-	giving := []int{3, 5, 1, 4, 2}
-	h := newBinaryHeap(giving)
-	rootIdx := 1
-
-	s.Equal(1, h.bSearch(rootIdx, 3))
-	s.Equal(2, h.bSearch(rootIdx, 5))
-	s.Equal(3, h.bSearch(rootIdx, 1))
-	s.Equal(4, h.bSearch(rootIdx, 4))
-	s.Equal(5, h.bSearch(rootIdx, 2))
-	s.Equal(0, h.bSearch(rootIdx, 6))
-
-	h.MinHeapify()
-	s.Equal(1, h.bSearch(rootIdx, 1))
-	s.Equal(2, h.bSearch(rootIdx, 2))
-	s.Equal(3, h.bSearch(rootIdx, 3))
-	s.Equal(4, h.bSearch(rootIdx, 5))
-	s.Equal(5, h.bSearch(rootIdx, 4))
-	s.Equal(0, h.bSearch(rootIdx, 6))
-}
-
 func (s *BHeapSuite) TestMinHeapSearch() {
 	giving := []int{3, 5, 1, 4, 2}
 	h := NewMinBinaryHeap(giving)
