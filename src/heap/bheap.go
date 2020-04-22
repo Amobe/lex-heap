@@ -163,26 +163,14 @@ func (h *binaryHeap) largeValueIdx(idxA, idxB int) int {
 	return h.compareValueIdex(idxA, idxB, cmp)
 }
 
-func (h *binaryHeap) minHeapify(root int) {
-	if h.invalidNode(root) {
-		return
-	}
-	left := h.leftChildIdx(root)
-	right := h.rightChildIdx(root)
-	if root != h.smallValueIdx(root, left) {
-		h.swapIdx(root, left)
-	}
-	if root != h.smallValueIdx(root, right) {
-		h.swapIdx(root, right)
-	}
-	h.minHeapify(left)
-	h.minHeapify(right)
-}
-
 // MinHeapify makes entire tree became a valid min heap.
+// time complexity: O(n)
+// https://stackoverflow.com/questions/9755721/how-can-building-a-heap-be-on-time-complexity
 func (h *binaryHeap) MinHeapify() {
-	rootIdx := 1
-	h.minHeapify(rootIdx)
+	nonLeafNode := h.len / 2
+	for i := nonLeafNode; i > 0; i-- {
+		h.bubbleDown(i)
+	}
 }
 
 func (h *binaryHeap) parentIdx(i int) int {

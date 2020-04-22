@@ -50,6 +50,18 @@ func (s *BHeapSuite) TestMinHeapify() {
 	s.Equal(0, h.Poll())
 }
 
+func (s *BHeapSuite) TestMinHeapifyBig() {
+	giving := []int{3, 5, 8, 4, 10, 6, 9, 2, 7, 1}
+	h := newBinaryHeapWithTree(giving)
+
+	expect := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	for _, v := range expect {
+		s.Equal(v, h.Poll())
+	}
+
+	s.Equal(0, h.Poll())
+}
+
 func (s *BHeapSuite) TestMinHeapOperation() {
 	h := NewBinaryMinHeap(nil)
 
