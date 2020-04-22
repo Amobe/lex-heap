@@ -5,4 +5,5 @@ type Heap interface {
 	Poll() int
 	Remove(int)
 	Search(int) int
+	Print()
 }

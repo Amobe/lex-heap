@@ -41,6 +41,7 @@ func (s *BHeapSuite) TestNewBinaryMinHeap() {
 func (s *BHeapSuite) TestMinHeapify() {
 	giving := []int{3, 5, 1, 4, 2}
 	h := newBinaryHeapWithTree(giving)
+	h.MinHeapify()
 
 	expect := []int{1, 2, 3, 4, 5}
 	for _, v := range expect {
@@ -50,9 +51,21 @@ func (s *BHeapSuite) TestMinHeapify() {
 	s.Equal(0, h.Poll())
 }
 
+func (s *BHeapSuite) TestInvalidMinHeapify() {
+	giving := []int{3, 5, 1, 4, 2}
+	h := newBinaryHeapWithTree(giving)
+
+	s.True(h.InvalidMinHeap())
+
+	h.MinHeapify()
+
+	s.False(h.InvalidMinHeap())
+}
+
 func (s *BHeapSuite) TestMinHeapifyBig() {
 	giving := []int{3, 5, 8, 4, 10, 6, 9, 2, 7, 1}
 	h := newBinaryHeapWithTree(giving)
+	h.MinHeapify()
 
 	expect := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 	for _, v := range expect {
@@ -110,4 +123,46 @@ func (s *BHeapSuite) TestRightChildIdx() {
 	s.Equal(253, h.rightChildIdx(126))
 	s.Equal(255, h.rightChildIdx(127))
 	s.Equal(0, h.rightChildIdx(128)) // out of range
+}
+
+func (s *BHeapSuite) TestGeneralUseCase() {
+	testCases := []struct {
+		giving   []int
+		expected []int
+	}{
+		{
+			giving:   []int{5, 1, 4, 2, 3},
+			expected: []int{1, 2, 3, 4, 5},
+		},
+		{
+			giving:   []int{4, 4, 3, 1, 9, 2},
+			expected: []int{1, 2, 3, 4, 4, 9},
+		},
+		{
+			giving:   []int{100},
+			expected: []int{100},
+		},
+		{
+			giving:   []int{3, 3, 3, 3, 3},
+			expected: []int{3, 3, 3, 3, 3},
+		},
+	}
+
+	for _, tc := range testCases {
+		h := NewBinaryMinHeap(tc.giving)
+		h.Print()
+		for _, v := range tc.expected {
+			s.Equal(v, h.Poll())
+		}
+	}
+}
+
+func BenchmarkInvalidMinHeap(b *testing.B) {
+	s := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	h := newBinaryHeapWithTree(s)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		h.InvalidMinHeap()
+	}
 }

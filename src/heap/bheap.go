@@ -87,7 +87,6 @@ func newBinaryHeapWithTree(tree []int) *binaryHeap {
 		h.len++
 		h.tree[h.len] = v
 	}
-	h.MinHeapify()
 	return h
 }
 
@@ -161,6 +160,22 @@ func (h *binaryHeap) largeValueIdx(idxA, idxB int) int {
 		return h.tree[idxA] > h.tree[idxB]
 	}
 	return h.compareValueIdex(idxA, idxB, cmp)
+}
+
+func (h *binaryHeap) invalidMinHeap(idx int) bool {
+	if h.invalidNode(idx) {
+		return false
+	}
+	if idx != h.smallValueIdx(idx, h.leftChildIdx(idx)) ||
+		idx != h.smallValueIdx(idx, h.rightChildIdx(idx)) {
+		return true
+	}
+	return h.invalidMinHeap(h.leftChildIdx(idx)) || h.invalidMinHeap(h.rightChildIdx(idx))
+}
+
+func (h *binaryHeap) InvalidMinHeap() bool {
+	rootIdx := 1
+	return h.invalidMinHeap(rootIdx)
 }
 
 // MinHeapify makes entire tree became a valid min heap.
