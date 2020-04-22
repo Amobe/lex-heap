@@ -97,6 +97,7 @@ func (h *binaryHeap) removeIdx(idx int) {
 		return
 	}
 	h.swapIdx(idx, h.len)
+	h.tree[h.len] = 0
 	h.len--
 	h.bubbleDown(idx)
 }
