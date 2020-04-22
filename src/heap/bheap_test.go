@@ -15,10 +15,10 @@ func TestBHeapSuite(t *testing.T) {
 }
 
 func (s *BHeapSuite) TestNewBinaryHeap() {
-	giving := []int{3, 5, 1, 4, 2}
+	giving := []int{3, 5, 1, -1, 4, 0, 2}
 	h := newBinaryHeap(giving)
 
-	expect := []int{1, 2, 3, 4, 5}
+	expect := []int{-1, 0, 1, 2, 3, 4, 5}
 	for _, v := range expect {
 		s.Equal(v, h.Poll())
 	}
@@ -146,11 +146,14 @@ func (s *BHeapSuite) TestGeneralUseCase() {
 			giving:   []int{3, 3, 3, 3, 3},
 			expected: []int{3, 3, 3, 3, 3},
 		},
+		{
+			giving:   []int{81, 87, -47, 59, -81, 18, 25, 40, 56, 0, 94, -11, 62, 89, 28, 74, 11, -45, -37, 6},
+			expected: []int{-81, -47, -45, -37, -11, 0, 6, 11, 18, 25, 28, 40, 56, 59, 62, 74, 81, 87, 89, 94},
+		},
 	}
 
 	for _, tc := range testCases {
 		h := NewBinaryMinHeap(tc.giving)
-		h.Print()
 		for _, v := range tc.expected {
 			s.Equal(v, h.Poll())
 		}
@@ -158,7 +161,8 @@ func (s *BHeapSuite) TestGeneralUseCase() {
 }
 
 func BenchmarkInvalidMinHeap(b *testing.B) {
-	s := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	// s := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	s := []int{10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
 	h := newBinaryHeapWithTree(s)
 
 	b.ResetTimer()
