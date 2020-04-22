@@ -24,11 +24,11 @@ func NewBinaryMinHeap(in []int) Heap {
 
 // Insert inserts a val into the heap.
 func (h *binaryHeap) Insert(val int) {
-	h.len++
-	idx := h.len
-	if h.idxOutOfRange(idx) {
+	idx := h.len + 1
+	if h.idxOutOfRange(idx) { // bug
 		return
 	}
+	h.len++
 	h.tree[idx] = val
 	h.bubbleUp(idx)
 }
